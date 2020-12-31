@@ -1,5 +1,5 @@
 # fall-detection
-Python ML library for people fall detection
+Python ML library for people fall detection based on Tensorflow and PoseNet.
 
 Includes:
 * Python source code and wheel package published on PyPi 
