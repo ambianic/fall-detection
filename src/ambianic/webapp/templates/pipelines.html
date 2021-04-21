@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Ambianic Pipelines - Live View</title>
+    <link rel="stylesheet" type="text/css" href="/static/ppview.css">
+    <!-- Load the Paper.js library -->
+    <script type="text/javascript" src="{{ url_for('bower.static', filename='paper/dist/paper-full.js') }}"></script>
+    <!-- Load external PaperScript and associate it with myCanvas -->
+    <script type="text/paperscript" src="{{ url_for('bower.static', filename='ambianic/dist/pipelines-view.js') }}" canvas="pipelines">
+    </script>
+</head>
+<body>
+
+	<canvas id="pipelines" resize></canvas>
+
+    <!-- A hidden link to a bitmap image. It will be used as an element in the dynamic canvas. -->
+    <img class="hidden" id="img" src="/data/objects/20190903-120009-image.jpg" width="400" height="300"></img>
+
+</body>
+</html>

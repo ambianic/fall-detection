@@ -1,0 +1,11 @@
+######################################
+#  Ambianic main configuration file  #
+######################################
+
+# Set logging level to one of DEBUG, INFO, WARNING, ERROR
+#logging:
+#  file: ./data/ambianic-log.txt
+#  level: DEBUG
+
+# no pipelines declared
+# pipelines:

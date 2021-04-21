@@ -1,0 +1,205 @@
+
+
+# page2
+- args:
+    datetime: '2020-05-10T19:05:45.577145'
+    id: page2
+    image_file_name: 20200510-190545.577145-image.jpg
+    inference_meta:
+      display: Object Detection
+    inference_result:
+    - box:
+        xmax: 0.7228575944900513
+        xmin: 0.3868940770626068
+        ymax: 1.0
+        ymin: 0.12535724414170846
+      confidence: 0.9921875
+      label: person
+    json_file_name: 20200510-190545.577145-inference.json
+    rel_dir: detections/20200510-190544.936209
+    thumbnail_file_name: 20200510-190545.577145-thumbnail.jpg
+  created: 1589137545.6190686
+  id: page2
+  message: Detection Event
+  priority: INFO
+  source_code:
+    funcName: _save_sample
+    lineno: 117
+    pathname: /workspace/src/ambianic/pipeline/store.py
+- args:
+    datetime: '2020-05-10T19:05:45.577145'
+    id: page2
+    image_file_name: 20200510-190545.577145-image.jpg
+    inference_meta:
+      display: Object Detection
+    inference_result:
+    - box:
+        xmax: 0.7228575944900513
+        xmin: 0.3868940770626068
+        ymax: 1.0
+        ymin: 0.12535724414170846
+      confidence: 0.9921875
+      label: person
+    json_file_name: 20200510-190545.577145-inference.json
+    rel_dir: detections/20200510-190544.936209
+    thumbnail_file_name: 20200510-190545.577145-thumbnail.jpg
+  created: 1589137545.6190686
+  id: page2
+  message: Detection Event
+  priority: INFO
+  source_code:
+    funcName: _save_sample
+    lineno: 117
+    pathname: /workspace/src/ambianic/pipeline/store.py
+- args:
+    datetime: '2020-05-10T19:05:45.577145'
+    id: page2
+    image_file_name: 20200510-190545.577145-image.jpg
+    inference_meta:
+      display: Object Detection
+    inference_result:
+    - box:
+        xmax: 0.7228575944900513
+        xmin: 0.3868940770626068
+        ymax: 1.0
+        ymin: 0.12535724414170846
+      confidence: 0.9921875
+      label: person
+    json_file_name: 20200510-190545.577145-inference.json
+    rel_dir: detections/20200510-190544.936209
+    thumbnail_file_name: 20200510-190545.577145-thumbnail.jpg
+  created: 1589137545.6190686
+  id: page2
+  message: Detection Event
+  priority: INFO
+  source_code:
+    funcName: _save_sample
+    lineno: 117
+    pathname: /workspace/src/ambianic/pipeline/store.py
+
+# page1
+- args:
+    datetime: '2020-05-10T19:05:45.577145'
+    id: page1
+    image_file_name: 20200510-190545.577145-image.jpg
+    inference_meta:
+      display: Object Detection
+    inference_result:
+    - box:
+        xmax: 0.7228575944900513
+        xmin: 0.3868940770626068
+        ymax: 1.0
+        ymin: 0.12535724414170846
+      confidence: 0.9921875
+      label: person
+    json_file_name: 20200510-190545.577145-inference.json
+    rel_dir: detections/20200510-190544.936209
+    thumbnail_file_name: 20200510-190545.577145-thumbnail.jpg
+  created: 1589137545.6190686
+  id: page1
+  message: Detection Event
+  priority: INFO
+  source_code:
+    funcName: _save_sample
+    lineno: 117
+    pathname: /workspace/src/ambianic/pipeline/store.py
+- args:
+    datetime: '2020-05-10T19:05:45.577145'
+    id: page1
+    image_file_name: 20200510-190545.577145-image.jpg
+    inference_meta:
+      display: Object Detection
+    inference_result:
+    - box:
+        xmax: 0.7228575944900513
+        xmin: 0.3868940770626068
+        ymax: 1.0
+        ymin: 0.12535724414170846
+      confidence: 0.9921875
+      label: person
+    json_file_name: 20200510-190545.577145-inference.json
+    rel_dir: detections/20200510-190544.936209
+    thumbnail_file_name: 20200510-190545.577145-thumbnail.jpg
+  created: 1589137545.6190686
+  id: page1
+  message: Detection Event
+  priority: INFO
+  source_code:
+    funcName: _save_sample
+    lineno: 117
+    pathname: /workspace/src/ambianic/pipeline/store.py
+- args:
+    datetime: '2020-05-10T19:05:45.577145'
+    id: page1
+    image_file_name: 20200510-190545.577145-image.jpg
+    inference_meta:
+      display: Object Detection
+    inference_result:
+    - box:
+        xmax: 0.7228575944900513
+        xmin: 0.3868940770626068
+        ymax: 1.0
+        ymin: 0.12535724414170846
+      confidence: 0.9921875
+      label: person
+    json_file_name: 20200510-190545.577145-inference.json
+    rel_dir: detections/20200510-190544.936209
+    thumbnail_file_name: 20200510-190545.577145-thumbnail.jpg
+  created: 1589137545.6190686
+  id: page1
+  message: Detection Event
+  priority: INFO
+  source_code:
+    funcName: _save_sample
+    lineno: 117
+    pathname: /workspace/src/ambianic/pipeline/store.py
+- args:
+    datetime: '2020-05-10T19:05:45.577145'
+    id: page1
+    image_file_name: 20200510-190545.577145-image.jpg
+    inference_meta:
+      display: Object Detection
+    inference_result:
+    - box:
+        xmax: 0.7228575944900513
+        xmin: 0.3868940770626068
+        ymax: 1.0
+        ymin: 0.12535724414170846
+      confidence: 0.9921875
+      label: person
+    json_file_name: 20200510-190545.577145-inference.json
+    rel_dir: detections/20200510-190544.936209
+    thumbnail_file_name: 20200510-190545.577145-thumbnail.jpg
+  created: 1589137545.6190686
+  id: page1
+  message: Detection Event
+  priority: INFO
+  source_code:
+    funcName: _save_sample
+    lineno: 117
+    pathname: /workspace/src/ambianic/pipeline/store.py
+- args:
+    datetime: '2020-05-10T19:05:45.577145'
+    id: page1
+    image_file_name: 20200510-190545.577145-image.jpg
+    inference_meta:
+      display: Object Detection
+    inference_result:
+    - box:
+        xmax: 0.7228575944900513
+        xmin: 0.3868940770626068
+        ymax: 1.0
+        ymin: 0.12535724414170846
+      confidence: 0.9921875
+      label: person
+    json_file_name: 20200510-190545.577145-inference.json
+    rel_dir: detections/20200510-190544.936209
+    thumbnail_file_name: 20200510-190545.577145-thumbnail.jpg
+  created: 1589137545.6190686
+  id: page1
+  message: Detection Event
+  priority: INFO
+  source_code:
+    funcName: _save_sample
+    lineno: 117
+    pathname: /workspace/src/ambianic/pipeline/store.py

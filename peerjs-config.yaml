@@ -1,0 +1,7 @@
+host: ambianic-pnp.herokuapp.com
+ice_servers:
+- urls:
+  - stun:stun.l.google.com:19302
+log_level: INFO
+port: 443
+secure: true
