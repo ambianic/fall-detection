@@ -4,9 +4,9 @@ _This repo is the new home of the fall detection model used in Ambianic Edge. We
 
 # TODO
 
-- [ ] Standalone Python ML library for people fall detection based on Tensorflow and [PoseNet 2.0](https://github.com/tensorflow/tfjs-models/tree/master/posenet).
+- [x] Standalone Python ML library for people fall detection based on Tensorflow and [PoseNet 2.0](https://github.com/tensorflow/tfjs-models/tree/master/posenet).
 - [ ] Python source code and wheel package published on PyPi 
-- [ ] Jupyter Notebook to interactively test and experiement with the model
+- [x] Jupyter Notebook to interactively test and experiement with the model
 - [ ] CI & test suite
 - [ ] Training and testing data sets
 - [ ] Third party ML models used as building blocks
@@ -31,6 +31,30 @@ End users install an Ambianic Box to constantly monitor a fall risk area of the 
 In the current design we use a combination of the [PoseNet 2.0](https://github.com/tensorflow/tfjs-models/tree/master/posenet) Deep Neural Network model and domain specific heuristics to estimate a fall occurance. The following diagram illustates the main steps.
 
 [![Fall Detection AI flow](https://user-images.githubusercontent.com/2234901/112545190-ea89d380-8d85-11eb-8e2c-7a6b104d159e.png)](https://drive.google.com/file/d/1sr2OcEWsGzoxJb4PwCIXOuEo7a5ubAxG/view?usp=sharing)
+
+## Experiment
+
+Experiment with the fall-detection module using simple script, jupyter-notebook or command line input(CLI) by feeding 2 or 3 images. The input images should be spaced about 1 second apart.
+
+###### Run a Python Script
+
+```
+python3 demo-fall-detection.py
+```
+
+###### Run a `Demo.ipynb` jupyter-notebook
+
+###### Exceute below command for CLI usage
+
+```
+To test fall-detection using the CLI for 2 images:
+python3 demo-fall-detection-cmd.py --image_1 Images/fall_img_1.png --image_2 Images/fall_img_2.png
+```
+
+```
+To test fall-detection using the CLI for 3 images:
+python3 demo-fall-detection-cmd.py --image_1 Images/fall_img_1.png --image_2 Images/fall_img_2.png --image_3 Images/fall_img_3.png
+```
 
 # Limitations
 
