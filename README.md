@@ -46,13 +46,15 @@ python3 demo-fall-detection.py
 
 ###### Exceute below command for CLI usage
 
-```
 To test fall-detection using the CLI for 2 images:
+
+```
 python3 demo-fall-detection-cmd.py --image_1 Images/fall_img_1.png --image_2 Images/fall_img_2.png
 ```
 
-```
 To test fall-detection using the CLI for 3 images:
+
+```
 python3 demo-fall-detection-cmd.py --image_1 Images/fall_img_1.png --image_2 Images/fall_img_2.png --image_3 Images/fall_img_3.png
 ```
 
