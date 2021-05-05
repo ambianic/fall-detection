@@ -36,15 +36,15 @@ In the current design we use a combination of the [PoseNet 2.0](https://github.c
 
 Experiment with the fall-detection module using simple script, jupyter-notebook or command line input(CLI) by feeding 2 or 3 images. The input images should be spaced about 1 second apart.
 
-## Run a Python Script
+Run a Python Script
 
 ```
 python3 demo-fall-detection.py
 ```
 
-## Run a `Demo.ipynb` jupyter-notebook
+Run a `Demo.ipynb` jupyter-notebook
 
-## Exceute below command for CLI usage
+Exceute below command for CLI usage
 
 To test fall-detection using the CLI for 2 images:
 
