@@ -42,7 +42,7 @@ else
 fi
 
 # pip3 show tflite-runtime
-pip3 list
+# pip3 list
 
 
 # [Cleanup]
