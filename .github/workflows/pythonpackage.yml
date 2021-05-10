@@ -35,9 +35,13 @@ jobs:
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
     - name: Test with pytest
       run: |
-        pip install pytest
-        pip install -r requirements.txt
-        pytest
+        # pip install pytest
+        # pytest
+        pwd
+          ls -al
+          echo GITHUB_WORKSPACE=${GITHUB_WORKSPACE}
+          echo "ARCH=${ARCH}"
+          ${GITHUB_WORKSPACE}/build/ci-test-job.sh
         
   release:
     name: Release Job
