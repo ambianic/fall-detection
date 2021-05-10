@@ -2,7 +2,6 @@ import os
 from dynaconf import Dynaconf
 from dynaconf.utils.boxing import DynaBox
 from typing import Union
-import importlib_metadata as metadata
 
 DEFAULT_WORK_DIR: str = '/workspace'
 DEFAULT_DATA_DIR: str = './data'
