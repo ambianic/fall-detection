@@ -41,8 +41,8 @@ else
   sudo pip3 install https://dl.google.com/coral/python/tflite_runtime-1.14.0-cp37-cp37m-linux_x86_64.whl
 fi
 
-# pip3 show tflite-runtime
-# pip3 list
+pip3 show tflite-runtime
+pip3 list
 
 
 # [Cleanup]
