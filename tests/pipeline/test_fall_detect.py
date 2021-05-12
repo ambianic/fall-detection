@@ -469,63 +469,6 @@ def test_no_sample():
 
 
 
-def test_draw_line_0():
-    """No body lines passed to draw. No image should be saved."""
-    config = _fall_detect_config()
-
-    fall_detector = FallDetector(**config)
-
-    image = _get_image(file_name='fall_img_1.png')
-    pose_dix = None
-    lines_drawn = fall_detector.draw_lines(image, pose_dix, 0.5)
-    assert lines_drawn == 0
-
-    pose_dix = {}
-    lines_drawn = fall_detector.draw_lines(image, pose_dix, 0.5)
-    assert lines_drawn == 0
-
-
-def test_draw_line_1():
-    """One body line passed to draw. Image with one line should be saved."""
-    config = _fall_detect_config()
-
-    fall_detector = FallDetector(**config)
-
-    image = _get_image(file_name='fall_img_1.png')
-    pose_dix = {fall_detector.LEFT_SHOULDER: [0, 0],
-                fall_detector.LEFT_HIP: [0, 1]}
-    lines_drawn = fall_detector.draw_lines(image, pose_dix, 0.5)
-    assert lines_drawn == 1
-
-
-def test_draw_line_1_1():
-    """One keypoing but no full body line. No image should be saved."""
-    config = _fall_detect_config()
-
-    fall_detector = FallDetector(**config)
-
-    image = _get_image(file_name='fall_img_1.png')
-    pose_dix = {fall_detector.LEFT_SHOULDER: [0, 0]}
-    lines_drawn = fall_detector.draw_lines(image, pose_dix, 0.5)
-    assert lines_drawn == 0
-
-
-def test_draw_line_2():
-    """Two body lines passed to draw. Image with two lines should be saved."""
-    config = _fall_detect_config()
-
-    fall_detector = FallDetector(**config)
-
-    # The frame represents a person who is in a standing position.
-    image = _get_image(file_name='fall_img_1.png')
-    pose_dix = {fall_detector.LEFT_SHOULDER: [0, 0],
-                fall_detector.LEFT_HIP: [0, 1],
-                fall_detector.RIGHT_SHOULDER: [1, 0],
-                fall_detector.RIGHT_HIP: [1, 1]}
-    lines_drawn = fall_detector.draw_lines(image, pose_dix, 0.5)
-    assert lines_drawn == 2
-
-
 def test_fall_detection_2_frame_back_case_1():
     """
         Expected to detect a fall using frame[t] and frame[t-1].

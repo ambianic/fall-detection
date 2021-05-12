@@ -7,7 +7,6 @@ import math
 import time
 from PIL import Image, ImageDraw
 from pathlib import Path
-import os
 
 log = logging.getLogger(__name__)
 
@@ -292,18 +291,8 @@ class FallDetector(TFDetectionModel):
         timestr = int(time.monotonic()*1000)
         debug_image_file_name = \
             f'tmp-fall-detect-thumbnail-{timestr}-score-{score}.jpg'
-        
-        print(os.path.dirname(os.path.abspath(__file__)))
-        print(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-        print(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
-        
-        x = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-        _tmp_path= os.path.join(x, self._sys_data_dir)
-
-        print("\n >>>>>>>>>>> path : ", Path(_tmp_path, debug_image_file_name))
-
         thumbnail.save(
-                       Path(_tmp_path, debug_image_file_name),
+                       Path(self._sys_data_dir, debug_image_file_name),
                        format='JPEG')
         print(Path(self._sys_data_dir, debug_image_file_name))
         return body_lines_drawn
