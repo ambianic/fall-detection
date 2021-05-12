@@ -36,10 +36,15 @@ pip3 install -r requirements.txt
 echo "Installing tflite for x86 CPU"
 if python3 --version | grep -q 3.8
 then
-  pip3 install --force-reinstall https://github.com/google-coral/pycoral/releases/download/v1.0.1/tflite_runtime-2.5.0-cp38-cp38-linux_x86_64.whl
+  pip3 install https://github.com/google-coral/pycoral/releases/download/v1.0.1/tflite_runtime-2.5.0-cp38-cp38-linux_x86_64.whl
+elif python3 --version | grep -q 3.6
+then
+  pip3 install https://github.com/google-coral/pycoral/releases/download/v1.0.1/tflite_runtime-2.5.0-cp36-cp36m-linux_x86_64.whl
 else
   pip3 install https://dl.google.com/coral/python/tflite_runtime-1.14.0-cp37-cp37m-linux_x86_64.whl
 fi
+
+
 
 pip3 list
 pip3 show tflite-runtime
