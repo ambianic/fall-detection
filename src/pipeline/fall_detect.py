@@ -291,6 +291,9 @@ class FallDetector(TFDetectionModel):
         timestr = int(time.monotonic()*1000)
         debug_image_file_name = \
             f'tmp-fall-detect-thumbnail-{timestr}-score-{score}.jpg'
+        
+        print("\n >>>>>>>>>>> path : ", Path(self._sys_data_dir, debug_image_file_name))
+
         thumbnail.save(
                        Path(self._sys_data_dir, debug_image_file_name),
                        format='JPEG')
