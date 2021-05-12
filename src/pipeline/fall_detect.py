@@ -295,15 +295,15 @@ class FallDetector(TFDetectionModel):
         
         print(os.path.dirname(os.path.abspath(__file__)))
         print(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-        # print(path.abspath(path.join(os.getcwd(),"../..")))
+        print(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+        
+        x = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+        _tmp_path= os.path.join(x, self._sys_data_dir)
 
-        x = os.path.dirname(os.path.abspath(__file__))
-        print(path.abspath(x, "../.."))
-
-        print("\n >>>>>>>>>>> path : ", Path(self._sys_data_dir, debug_image_file_name))
+        print("\n >>>>>>>>>>> path : ", Path(_tmp_path, debug_image_file_name))
 
         thumbnail.save(
-                       Path(self._sys_data_dir, debug_image_file_name),
+                       Path(_tmp_path, debug_image_file_name),
                        format='JPEG')
         print(Path(self._sys_data_dir, debug_image_file_name))
         return body_lines_drawn
