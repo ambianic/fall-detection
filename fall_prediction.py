@@ -1,7 +1,6 @@
 import os
 import time
 
-from src.pipeline import PipeElement
 from src.pipeline.fall_detect import FallDetector
 
 
@@ -29,36 +28,24 @@ def _fall_detect_config():
     return config
 
 
-class _OutPipeElement(PipeElement):
-
-    def __init__(self, sample_callback=None):
-        super().__init__()
-        assert sample_callback
-        self._sample_callback = sample_callback
-
-    def receive_next_sample(self, **sample):
-        self._sample_callback(**sample)
-
-
 def Fall_prediction(img_1,img_2,img_3=None):
     
     config = _fall_detect_config()
     result = None
-
-    def sample_callback(image=None, inference_result=None, **kwargs):
-        nonlocal result
-        result = inference_result
-
+    
     fall_detector = FallDetector(**config)
 
-    output = _OutPipeElement(sample_callback=sample_callback)
-    fall_detector.connect_to_next_element(output)
-    
-    fall_detector.receive_next_sample(image=img_1)
+    def process_response(response):
+        nonlocal result
+        for res in response:
+            result = res['inference_result']
+
+    process_response(fall_detector.process_sample(image=img_1))
+        
     time.sleep(fall_detector.min_time_between_frames)
-
-    fall_detector.receive_next_sample(image=img_2)
-
+    
+    process_response(fall_detector.process_sample(image=img_2))
+    
     if len(result) == 1:
         category = result[0]['label']
         confidence = result[0]['confidence']
@@ -77,7 +64,7 @@ def Fall_prediction(img_1,img_2,img_3=None):
         if img_3:
             
             time.sleep(fall_detector.min_time_between_frames)
-            fall_detector.receive_next_sample(image=img_3)
+            process_response(fall_detector.process_sample(image=img_3))
 
             if len(result) == 1:
 

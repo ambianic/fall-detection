@@ -4,9 +4,7 @@ import sys
 import os
 sys.path.append(os.path.abspath('.'))
 
-
 from src.pipeline.fall_detect import FallDetector
-from src.pipeline import PipeElement
 import os
 import time
 from PIL import Image
@@ -44,17 +42,6 @@ def _get_image(file_name=None):
     return img
 
 
-class _OutPipeElement(PipeElement):
-
-    def __init__(self, sample_callback=None):
-        super().__init__()
-        assert sample_callback
-        self._sample_callback = sample_callback
-
-    def receive_next_sample(self, **sample):
-        self._sample_callback(**sample)
-
-
 def test_model_inputs():
     """Verify against known model inputs."""
     config = _fall_detect_config()
@@ -77,17 +64,17 @@ def test_fall_detection_thumbnail_present():
     config = _fall_detect_config()
     result = None
 
-    def sample_callback(image=None, thumbnail=None, inference_result=None,
-                        **kwargs):
+    def process_response(response):
         nonlocal result
-        result = image is not None and thumbnail is not None and \
-            inference_result is not None
+        for res in response:
+            result = res['image'] is not None and res['thumbnail'] is not None and \
+                     res['inference_result'] is not None
 
     fall_detector = FallDetector(**config)
-    output = _OutPipeElement(sample_callback=sample_callback)
-    fall_detector.connect_to_next_element(output)
+
     img_1 = _get_image(file_name='fall_img_1.png')
-    fall_detector.receive_next_sample(image=img_1)
+    process_response(fall_detector.process_sample(image=img_1))
+
     assert result is True
 
 
@@ -96,14 +83,12 @@ def test_fall_detection_case_1():
     config = _fall_detect_config()
     result = None
 
-    def sample_callback(image=None, inference_result=None, **kwargs):
+    def process_response(response):
         nonlocal result
-        result = inference_result
+        for res in response:
+            result = res['inference_result']
 
     fall_detector = FallDetector(**config)
-
-    output = _OutPipeElement(sample_callback=sample_callback)
-    fall_detector.connect_to_next_element(output)
 
     # The frame represents a person who is in a standing position.
     img_1 = _get_image(file_name='fall_img_1.png')
@@ -111,10 +96,10 @@ def test_fall_detection_case_1():
     # The frame represents a person completely falls.
     img_2 = _get_image(file_name='fall_img_3.png')
 
-    fall_detector.receive_next_sample(image=img_1)
+    process_response(fall_detector.process_sample(image=img_1))
     fall_detector.min_time_between_frames = 0.01
     time.sleep(fall_detector.min_time_between_frames)
-    fall_detector.receive_next_sample(image=img_2)
+    process_response(fall_detector.process_sample(image=img_2))
 
     assert not result
 
@@ -126,15 +111,12 @@ def test_fall_detection_case_2_1():
     config = _fall_detect_config()
     result = None
 
-    def sample_callback(image=None, inference_result=None, **kwargs):
+    def process_response(response):
         nonlocal result
-        result = inference_result
+        for res in response:
+            result = res['inference_result']
 
     fall_detector = FallDetector(**config)
-
-    output = _OutPipeElement(sample_callback=sample_callback)
-
-    fall_detector.connect_to_next_element(output)
 
     # The frame represents a person who is in a standing position.
     img_1 = _get_image(file_name='fall_img_1.png')
@@ -143,7 +125,7 @@ def test_fall_detection_case_2_1():
     img_2 = _get_image(file_name='fall_img_2.png')
 
     start_time = time.monotonic()
-    fall_detector.receive_next_sample(image=img_1)
+    process_response(fall_detector.process_sample(image=img_1))
     end_time = time.monotonic()
     safe_min = end_time-start_time+1
     # set min time to a sufficiently big number to ensure test passes
@@ -151,7 +133,7 @@ def test_fall_detection_case_2_1():
     # the goal is to simulate two frames that are too close in time
     # to be considered for a fall detection sequence
     fall_detector.min_time_between_frames = safe_min
-    fall_detector.receive_next_sample(image=img_2)
+    process_response(fall_detector.process_sample(image=img_2))
 
     assert not result
 
@@ -163,15 +145,12 @@ def test_fall_detection_case_2_2():
     config = _fall_detect_config()
     result = None
 
-    def sample_callback(image=None, inference_result=None, **kwargs):
+    def process_response(response):
         nonlocal result
-        result = inference_result
+        for res in response:
+            result = res['inference_result']
 
     fall_detector = FallDetector(**config)
-
-    output = _OutPipeElement(sample_callback=sample_callback)
-
-    fall_detector.connect_to_next_element(output)
 
     # The frame represents a person who is in a standing position.
     img_1 = _get_image(file_name='fall_img_1.png')
@@ -179,10 +158,10 @@ def test_fall_detection_case_2_2():
     # The frame represents a person falls.
     img_2 = _get_image(file_name='fall_img_2.png')
 
-    fall_detector.receive_next_sample(image=img_1)
+    process_response(fall_detector.process_sample(image=img_1))
     fall_detector.min_time_between_frames = 0.01
     time.sleep(fall_detector.min_time_between_frames)
-    fall_detector.receive_next_sample(image=img_2)
+    process_response(fall_detector.process_sample(image=img_2))
 
     assert result
     assert len(result) == 1
@@ -203,15 +182,12 @@ def test_fall_detection_case_3_1():
     config = _fall_detect_config()
     result = None
 
-    def sample_callback(image=None, inference_result=None, **kwargs):
+    def process_response(response):
         nonlocal result
-        result = inference_result
+        for res in response:
+            result = res['inference_result']
 
     fall_detector = FallDetector(**config)
-
-    output = _OutPipeElement(sample_callback=sample_callback)
-
-    fall_detector.connect_to_next_element(output)
 
     # The frame represents a person who is in a standing position.
     img_1 = _get_image(file_name='fall_img_11.png')
@@ -219,11 +195,11 @@ def test_fall_detection_case_3_1():
     # The frame represents a person completely falls.
     img_2 = _get_image(file_name='fall_img_12.png')
 
-    fall_detector.receive_next_sample(image=img_1)
+    process_response(fall_detector.process_sample(image=img_1))
     # set min time to a small number to speed up testing
     fall_detector.min_time_between_frames = 0.01
     time.sleep(fall_detector.min_time_between_frames)
-    fall_detector.receive_next_sample(image=img_2)
+    process_response(fall_detector.process_sample(image=img_2))
 
     assert result
     assert len(result) == 1
@@ -245,15 +221,13 @@ def test_fall_detection_case_3_2():
     config = _fall_detect_config()
     result = None
 
-    def sample_callback(image=None, inference_result=None, **kwargs):
+    def process_response(response):
         nonlocal result
-        result = inference_result
+        for res in response:
+            result = res['inference_result']
 
     fall_detector = FallDetector(**config)
 
-    output = _OutPipeElement(sample_callback=sample_callback)
-
-    fall_detector.connect_to_next_element(output)
 
     # The frame represents a person who is in a standing position.
     img_1 = _get_image(file_name='fall_img_11_flip.png')
@@ -261,11 +235,11 @@ def test_fall_detection_case_3_2():
     # The frame represents a person completely falls.
     img_2 = _get_image(file_name='fall_img_12_flip.png')
 
-    fall_detector.receive_next_sample(image=img_1)
+    process_response(fall_detector.process_sample(image=img_1))
     # set min time to a small number to speed up testing
     fall_detector.min_time_between_frames = 0.01
     time.sleep(fall_detector.min_time_between_frames)
-    fall_detector.receive_next_sample(image=img_2)
+    process_response(fall_detector.process_sample(image=img_2))
 
     assert result
     assert len(result) == 1
@@ -286,15 +260,12 @@ def test_fall_detection_case_4():
     config = _fall_detect_config()
     result = None
 
-    def sample_callback(image=None, inference_result=None, **kwargs):
+    def process_response(response):
         nonlocal result
-        result = inference_result
+        for res in response:
+            result = res['inference_result']
 
     fall_detector = FallDetector(**config)
-
-    output = _OutPipeElement(sample_callback=sample_callback)
-
-    fall_detector.connect_to_next_element(output)
 
     # The frame represents a person who is in a standing position.
     img_1 = _get_image(file_name='fall_img_1.png')
@@ -302,10 +273,10 @@ def test_fall_detection_case_4():
     # The frame represents a person who is in a standing position.
     img_2 = _get_image(file_name='fall_img_4.png')
 
-    fall_detector.receive_next_sample(image=img_1)
+    process_response(fall_detector.process_sample(image=img_1))
     fall_detector.min_time_between_frames = 0.01
     time.sleep(fall_detector.min_time_between_frames)
-    fall_detector.receive_next_sample(image=img_2)
+    process_response(fall_detector.process_sample(image=img_2))
 
     assert not result
 
@@ -316,15 +287,12 @@ def test_fall_detection_case_5():
     config = _fall_detect_config()
     result = None
 
-    def sample_callback(image=None, inference_result=None, **kwargs):
+    def process_response(response):
         nonlocal result
-        result = inference_result
+        for res in response:
+            result = res['inference_result']
 
     fall_detector = FallDetector(**config)
-
-    output = _OutPipeElement(sample_callback=sample_callback)
-
-    fall_detector.connect_to_next_element(output)
 
     # The frame represents a person falls.
     img_1 = _get_image(file_name='fall_img_2.png')
@@ -332,10 +300,10 @@ def test_fall_detection_case_5():
     # The frame represents a person who is in a standing position.
     img_2 = _get_image(file_name='fall_img_1.png')
 
-    fall_detector.receive_next_sample(image=img_1)
+    process_response(fall_detector.process_sample(image=img_1))
     fall_detector.min_time_between_frames = 0.01
     time.sleep(fall_detector.min_time_between_frames)
-    fall_detector.receive_next_sample(image=img_2)
+    process_response(fall_detector.process_sample(image=img_2))
 
     assert not result
 
@@ -346,15 +314,13 @@ def test_fall_detection_case_6():
     config = _fall_detect_config()
     result = None
 
-    def sample_callback(image=None, inference_result=None, **kwargs):
+    def process_response(response):
         nonlocal result
-        result = inference_result
+        for res in response:
+            result = res['inference_result']
 
     fall_detector = FallDetector(**config)
 
-    output = _OutPipeElement(sample_callback=sample_callback)
-
-    fall_detector.connect_to_next_element(output)
 
     # The frame represents a person who is in a standing position.
     img_1 = _get_image(file_name='fall_img_5.png')
@@ -362,11 +328,11 @@ def test_fall_detection_case_6():
     # No person in a frame
     img_2 = _get_image(file_name='fall_img_6.png')
 
-    fall_detector.receive_next_sample(image=img_1)
+    process_response(fall_detector.process_sample(image=img_1))
     # set min time to a small number to speed up testing
     fall_detector.min_time_between_frames = 0.01
     time.sleep(fall_detector.min_time_between_frames)
-    fall_detector.receive_next_sample(image=img_2)
+    process_response(fall_detector.process_sample(image=img_2))
 
     assert not result
 
@@ -376,15 +342,13 @@ def test_fall_detection_case_7():
     config = _fall_detect_config()
     result = None
 
-    def sample_callback(image=None, inference_result=None, **kwargs):
+    def process_response(response):
         nonlocal result
-        result = inference_result
+        for res in response:
+            result = res['inference_result']
 
     fall_detector = FallDetector(**config)
-
-    output = _OutPipeElement(sample_callback=sample_callback)
-
-    fall_detector.connect_to_next_element(output)
+    
 
     # The frame represents a person who is in a standing position.
     img_1 = _get_image(file_name='fall_img_5.png')
@@ -392,11 +356,11 @@ def test_fall_detection_case_7():
     # The frame represents a person who is in a standing position.
     img_2 = _get_image(file_name='fall_img_7.png')
 
-    fall_detector.receive_next_sample(image=img_1)
+    process_response(fall_detector.process_sample(image=img_1))
     # set min time to a small number to speed up testing
     fall_detector.min_time_between_frames = 0.01
     time.sleep(fall_detector.min_time_between_frames)
-    fall_detector.receive_next_sample(image=img_2)
+    process_response(fall_detector.process_sample(image=img_2))
 
     assert not result
 
@@ -406,15 +370,13 @@ def test_fall_detection_case_8():
     config = _fall_detect_config()
     result = None
 
-    def sample_callback(image=None, inference_result=None, **kwargs):
+    def process_response(response):
         nonlocal result
-        result = inference_result
+        for res in response:
+            result = res['inference_result']
 
     fall_detector = FallDetector(**config)
 
-    output = _OutPipeElement(sample_callback=sample_callback)
-
-    fall_detector.connect_to_next_element(output)
 
     # No person in a frame
     img_1 = _get_image(file_name='fall_img_6.png')
@@ -422,11 +384,11 @@ def test_fall_detection_case_8():
     # The frame represents a person who is in a standing position.
     img_2 = _get_image(file_name='fall_img_7.png')
 
-    fall_detector.receive_next_sample(image=img_1)
+    process_response(fall_detector.process_sample(image=img_1))
     # set min time to a small number to speed up testing
     fall_detector.min_time_between_frames = 0.01
     time.sleep(fall_detector.min_time_between_frames)
-    fall_detector.receive_next_sample(image=img_2)
+    process_response(fall_detector.process_sample(image=img_2))
 
     assert not result
 
@@ -436,20 +398,24 @@ def test_background_image():
     config = _fall_detect_config()
     result = None
 
-    def sample_callback(image=None, thumbnail=None, inference_result=None,
-                        **kwargs):
+    def process_response(response):
         nonlocal result
-        result = image is not None and thumbnail is not None and \
-            not inference_result
+        for res in response:
+            print(res)
+            result = res['image'] is not None and res['thumbnail'] is not None and \
+            not res['inference_result']
+
     fall_detector = FallDetector(**config)
-    output = _OutPipeElement(sample_callback=sample_callback)
-    fall_detector.connect_to_next_element(output)
+        
     img = _get_image(file_name='background.jpg')
-    fall_detector.receive_next_sample(image=img)
+    process_response(fall_detector.process_sample(image=img))
+
     fall_detector.min_time_between_frames = 0.01
     time.sleep(fall_detector.min_time_between_frames)
+    
     img = _get_image(file_name='background.jpg')
-    fall_detector.receive_next_sample(image=img)
+    process_response(fall_detector.process_sample(image=img))
+    
     assert result is True
 
 
@@ -458,13 +424,16 @@ def test_no_sample():
     config = _fall_detect_config()
     result = False
 
-    def sample_callback(image=None, inference_result=None, **kwargs):
+    def process_response(response):
         nonlocal result
-        result = image is None and inference_result is None
+        for res in response:
+            result = res is None
+
+    
     fall_detector = FallDetector(**config)
-    output = _OutPipeElement(sample_callback=sample_callback)
-    fall_detector.connect_to_next_element(output)
-    fall_detector.receive_next_sample()
+        
+    # fall_detector.receive_next_sample()
+    process_response(fall_detector.process_sample())
     assert result is True
 
 
@@ -480,15 +449,14 @@ def test_fall_detection_2_frame_back_case_1():
     config = _fall_detect_config()
     result = None
 
-    def sample_callback(image=None, inference_result=None, **kwargs):
+    def process_response(response):
         nonlocal result
-        result = inference_result
+        for res in response:
+            result = res['inference_result']
 
     fall_detector = FallDetector(**config)
 
-    output = _OutPipeElement(sample_callback=sample_callback)
-    fall_detector.connect_to_next_element(output)
-
+    
     # A frame at t-2 timestamp when person is in standing position.
     img_1 = _get_image(file_name='fall_img_1.png')
 
@@ -501,15 +469,15 @@ def test_fall_detection_2_frame_back_case_1():
 
     fall_detector.min_time_between_frames = 0.01
 
-    fall_detector.receive_next_sample(image=img_1)
+    process_response(fall_detector.process_sample(image=img_1))
     time.sleep(fall_detector.min_time_between_frames)
 
-    fall_detector.receive_next_sample(image=img_2)
+    process_response(fall_detector.process_sample(image=img_2))
     time.sleep(fall_detector.min_time_between_frames)
 
     assert not result
 
-    fall_detector.receive_next_sample(image=img_3)
+    process_response(fall_detector.process_sample(image=img_3))
 
     assert result
     assert len(result) == 1
@@ -535,14 +503,13 @@ def test_fall_detection_2_frame_back_case_2():
     config = _fall_detect_config()
     result = None
 
-    def sample_callback(image=None, inference_result=None, **kwargs):
+    def process_response(response):
         nonlocal result
-        result = inference_result
+        for res in response:
+            result = res['inference_result']
 
     fall_detector = FallDetector(**config)
 
-    output = _OutPipeElement(sample_callback=sample_callback)
-    fall_detector.connect_to_next_element(output)
 
     # A frame at t-2 timestamp when person is in standing position.
     img_1 = _get_image(file_name='fall_img_1.png')
@@ -556,15 +523,15 @@ def test_fall_detection_2_frame_back_case_2():
     fall_detector.min_time_between_frames = 0.01
     fall_detector.max_time_between_frames = 15
 
-    fall_detector.receive_next_sample(image=img_1)
+    process_response(fall_detector.process_sample(image=img_1))
     time.sleep(fall_detector.min_time_between_frames)
 
-    fall_detector.receive_next_sample(image=img_2)
+    process_response(fall_detector.process_sample(image=img_2))
     time.sleep(fall_detector.min_time_between_frames)
 
     assert not result
 
-    fall_detector.receive_next_sample(image=img_3)
+    process_response(fall_detector.process_sample(image=img_3))
 
     assert result
     assert len(result) == 1
@@ -591,14 +558,12 @@ def test_fall_detection_2_frame_back_case_3():
     config = _fall_detect_config()
     result = None
 
-    def sample_callback(image=None, inference_result=None, **kwargs):
+    def process_response(response):
         nonlocal result
-        result = inference_result
+        for res in response:
+            result = res['inference_result']
 
     fall_detector = FallDetector(**config)
-
-    output = _OutPipeElement(sample_callback=sample_callback)
-    fall_detector.connect_to_next_element(output)
 
     # A frame at t-2 timestamp when person is in walking postion.
     img_1 = _get_image(file_name='fall_img_15.png')
@@ -611,14 +576,14 @@ def test_fall_detection_2_frame_back_case_3():
 
     fall_detector.min_time_between_frames = 0.01
 
-    fall_detector.receive_next_sample(image=img_1)
+    process_response(fall_detector.process_sample(image=img_1))
     time.sleep(fall_detector.min_time_between_frames)
 
-    fall_detector.receive_next_sample(image=img_2)
+    process_response(fall_detector.process_sample(image=img_2))
     time.sleep(fall_detector.min_time_between_frames)
 
     assert not result
 
-    fall_detector.receive_next_sample(image=img_3)
+    process_response(fall_detector.process_sample(image=img_3))
 
     assert not result

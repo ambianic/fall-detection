@@ -14,10 +14,6 @@ jobs:
 
     steps:
     - uses: actions/checkout@v1
-    - name: Install aiortc native dependencies
-      run: |
-        sudo apt-get update
-        sudo apt-get install libavdevice-dev libavfilter-dev libopus-dev libvpx-dev pkg-config
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v1
       with:

@@ -7,9 +7,9 @@ _This repo is the new home of the fall detection model used in Ambianic Edge. We
 - [x] Standalone Python ML library for people fall detection based on Tensorflow and [PoseNet 2.0](https://github.com/tensorflow/tfjs-models/tree/master/posenet).
 - [ ] Python source code and wheel package published on PyPi 
 - [x] Jupyter Notebook to interactively test and experiement with the model
-- [ ] CI & test suite
-- [ ] Training and testing data sets
-- [ ] Third party ML models used as building blocks
+- [x] CI & test suite
+- [x] Training and testing data sets
+- [x] Third party ML models used as building blocks
 
 # Project motivation
 

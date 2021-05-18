@@ -34,10 +34,7 @@ class FallDetector(TFDetectionModel):
                          confidence_threshold=confidence_threshold,
                          **kwargs)
 
-        if self.context:
-            self._sys_data_dir = self.context.data_dir
-        else:
-            self._sys_data_dir = DEFAULT_DATA_DIR
+        self._sys_data_dir = DEFAULT_DATA_DIR
         self._sys_data_dir = Path(self._sys_data_dir)
 
         # previous pose detection information for frame at time t-1 and t-2 \
@@ -64,7 +61,7 @@ class FallDetector(TFDetectionModel):
         # self._prev_data[1] : store data of frame at t-1
         self._prev_data[0] = self._prev_data[1] = _dix
 
-        self._pose_engine = PoseEngine(self._tfengine, context=self.context)
+        self._pose_engine = PoseEngine(self._tfengine)
         self._fall_factor = 60
         self.confidence_threshold = confidence_threshold
         log.debug(f"Initializing FallDetector with conficence threshold: \
@@ -465,7 +462,7 @@ class FallDetector(TFDetectionModel):
 
                 # log.debug("Logging stats")
 
-        self.log_stats(start_time=start_time)
+        # self.log_stats(start_time=start_time)
         log.debug("thumbnail: %r", thumbnail)
         return inference_result, thumbnail
 

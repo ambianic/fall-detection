@@ -3,16 +3,14 @@ import logging
 import time
 import re
 import numpy as np
-# from importlib import import_module
 from PIL import ImageOps
 from .inference import TFInferenceEngine
-from src.pipeline import PipeElement
 
 
 log = logging.getLogger(__name__)
 
 
-class TFDetectionModel(PipeElement):
+class TFDetectionModel():
     """Applies Tensorflow image detection."""
 
     def __init__(self,
@@ -163,17 +161,4 @@ class TFDetectionModel(PipeElement):
         new_im = TFDetectionModel.resize(image=thumbnail, desired_size=desired_size)
         return new_im, thumbnail
 
-    def log_stats(self, start_time=None):
-        assert start_time
-        log.debug("TF engine returned inference results")
-        end_time = time.monotonic()
-        inf_time = (end_time - start_time) * 1000
-        fps = 1.0/(end_time - self.last_time)
-        if self.context and self.context.unique_pipeline_name:
-            pipeline_name = self.context.unique_pipeline_name
-        else:
-            pipeline_name = 'unknown'
-        inference_type = type(self).__name__
-        inf_info = '%s inference time %.2f ms, %.2f fps in pipeline %s'
-        log.info(inf_info, inference_type, inf_time, fps, pipeline_name)
-        self.last_time = end_time
+    
