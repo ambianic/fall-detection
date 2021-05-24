@@ -1,5 +1,5 @@
 """Fall detection pipe element."""
-from src.pipeline.tf_detect import TFDetectionModel
+from .inference import TFInferenceEngine
 from src.pipeline.pose_engine import PoseEngine
 from src import DEFAULT_DATA_DIR
 import logging
@@ -11,11 +11,12 @@ from pathlib import Path
 log = logging.getLogger(__name__)
 
 
-class FallDetector(TFDetectionModel):
+class FallDetector():
 
     """Detects falls comparing two images spaced about 1-2 seconds apart."""
     def __init__(self,
                  model=None,
+                 labels=None,
                  confidence_threshold=0.15,
                  **kwargs
                  ):
@@ -30,9 +31,11 @@ class FallDetector(TFDetectionModel):
                 'ai_models/posenet_mobilenet_v1_075_721_1281_quant_decoder_edgetpu.tflite'
         }
         """
-        super().__init__(model=model,
-                         confidence_threshold=confidence_threshold,
-                         **kwargs)
+        
+        self._tfengine = TFInferenceEngine(
+                        model=model,
+                        labels=labels,
+                        confidence_threshold=confidence_threshold)
 
         self._sys_data_dir = DEFAULT_DATA_DIR
         self._sys_data_dir = Path(self._sys_data_dir)

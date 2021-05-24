@@ -1,10 +1,10 @@
-from src.pipeline.tf_detect import TFDetectionModel
 from src import DEFAULT_DATA_DIR
 import logging
 import time
 import numpy as np
 from PIL import ImageDraw
 from pathlib import Path
+from PIL import ImageOps
 
 log = logging.getLogger(__name__)
 
@@ -120,6 +120,81 @@ class PoseEngine:
     def tf_interpreter(self):
         return self._tfengine._tf_interpreter
 
+
+    def thumbnail(self, image=None, desired_size=None):
+        """Resizes original image as close as possible to desired size.
+        Preserves aspect ratio of original image.
+        Does not modify the original image.
+        :Parameters:
+        ----------
+        image : PIL.Image
+            Input Image for AI model detection.
+        desired_size : (width, height)
+            Size expected by the AI model.
+        :Returns:
+        -------
+        PIL.Image
+            Resized image fitting for the AI model input tensor.
+        """
+        assert image
+        assert desired_size
+        log.debug('input image size = %r', image.size)
+        thumb = image.copy()
+        w, h = desired_size
+        try:
+            # convert from numpy to native Python int type
+            # that PIL expects
+            if isinstance(w, np.generic):
+                w = w.item()
+                w = int(w)
+                h = h.item()
+                h = int(h)
+            thumb.thumbnail((w, h))
+        except Exception as e:
+            msg = (f"Exception in "
+                   f"PIL.image.thumbnail(desired_size={desired_size}):"
+                   f"type(width)={type(w)}, type(height)={type(h)}"
+                   f"\n{e}"
+                   )
+            log.exception(msg)
+            raise RuntimeError(msg)
+        log.debug('thmubnail image size = %r', thumb.size)
+        return thumb
+
+
+    def resize(self, image=None, desired_size=None):
+        """Pad original image to exact size expected by input tensor.
+        Preserve aspect ratio to avoid confusing the AI model with
+        unnatural distortions. Pad the resulting image
+        with solid black color pixels to fill the desired size.
+        Do not modify the original image.
+        :Parameters:
+        ----------
+        image : PIL.Image
+            Input Image sized to fit an input tensor but without padding.
+            Its possible that one size fits one tensor dimension exactly
+            but the other size is smaller than
+            the input tensor other dimension.
+        desired_size : (width, height)
+            Exact size expected by the AI model.
+        :Returns:
+        -------
+        PIL.Image
+            Resized image fitting exactly the AI model input tensor.
+        """
+        assert image
+        assert desired_size
+        log.debug('input image size = %r', image.size)
+        thumb = image.copy()
+        delta_w = desired_size[0] - thumb.size[0]
+        delta_h = desired_size[1] - thumb.size[1]
+        padding = (0, 0, delta_w, delta_h)
+        new_im = ImageOps.expand(thumb, padding)
+        log.debug('new image size = %r', new_im.size)
+        assert new_im.size == desired_size
+        return new_im
+
+
     def detect_poses(self, img):
         """
         Detects poses in a given image.
@@ -139,13 +214,13 @@ class PoseEngine:
                               self._tensor_image_height)
 
         # thumbnail is a proportionately resized image
-        thumbnail = TFDetectionModel.thumbnail(image=img,
+        thumbnail = self.thumbnail(image=img,
                                                desired_size=_tensor_input_size)
         # convert thumbnail into an image with the exact size
         # as the input tensor preserving proportions by padding with
         # a solid color as needed
-        template_image = TFDetectionModel.resize(image=thumbnail,
-                                                 desired_size=_tensor_input_size)
+        template_image = self.resize(image=thumbnail,
+                                desired_size=_tensor_input_size)
 
         template_input = np.expand_dims(template_image.copy(), axis=0)
         floating_model = self._tfengine.input_details[0]['dtype'] == np.float32

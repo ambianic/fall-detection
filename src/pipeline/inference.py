@@ -41,7 +41,6 @@ class TFInferenceEngine:
                  model=None,
                  labels=None,
                  confidence_threshold=0.8,
-                 top_k=10,
                  **kwargs
                  ):
         """Create an instance of Tensorflow inference engine.
@@ -59,9 +58,7 @@ class TFInferenceEngine:
             Location of file with model labels.
         confidence_threshold : float
             Inference confidence threshold.
-        top_k : type
-            Inference top-k threshold.
-
+        
         """
         assert model
         assert model['tflite'], 'TFLite AI model path required.'
@@ -82,7 +79,6 @@ class TFInferenceEngine:
             .format(labels)
         self._model_labels_path = labels
         self._confidence_threshold = confidence_threshold
-        self._top_k = top_k
         log.info('Loading AI model:\n'
                   'TFLite graph: %r\n'
                   'EdgeTPU graph: %r\n'
@@ -92,8 +88,7 @@ class TFInferenceEngine:
                   model_tflite,
                   model_edgetpu,
                   labels,
-                  confidence_threshold*100,
-                  top_k)
+                  confidence_threshold*100)
         # EdgeTPU is not available in testing and other environments
         # load dynamically as needed
 #        edgetpu_class = 'DetectionEngine'
@@ -125,19 +120,6 @@ class TFInferenceEngine:
         return self._tf_is_quantized_model
 
     @property
-    def labels_path(self):
-        """
-        Location of labels file.
-
-        :Returns:
-        -------
-        string
-            Path to AI model labels.
-
-        """
-        return self._model_labels_path
-
-    @property
     def confidence_threshold(self):
         """
         Inference confidence threshold.
@@ -152,20 +134,7 @@ class TFInferenceEngine:
         """
         return self._confidence_threshold
 
-    @property
-    def top_k(self):
-        """
-        Inference top-k threshold.
-
-        :Returns:
-        -------
-        int
-            Max number of results to be returned by each inference.
-            Ordered by confidence score.
-
-        """
-        return self._top_k
-
+    
     def infer(self):
         """Invoke model inference on current input tensor."""
         return self._tf_interpreter.invoke()
