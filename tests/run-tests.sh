@@ -27,7 +27,7 @@ echo "Script location: ${BASEDIR}"
 cd $BASEDIR/../
 echo PWD=$PWD
 # python3 -m pytest --cov-report=xml --cov-report=term tests/
-python3 -m pytest --cov=ambianic --cov-report=xml --cov-report=term tests/
+python3 -m pytest --cov=./ --cov-report=xml --cov-report=term tests/
 # if -u command line argument is passed, submit code coverage report to codecov.io
 # parse command line arguments
 # if [ "$upload_codecov" = true ] ; then
