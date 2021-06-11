@@ -35,3 +35,10 @@ python3 -m pytest --cov=./ --cov-report=xml --cov-report=term tests/
 #    codecov
 # fi
 
+echo "detect effective CPU architecture"
+# detect effective CPU architecture
+if [[ ${ARCH} == *"amd64"* ]]; then
+    echo "testing..................."
+    bash <(curl -s https://codecov.io/bash)
+fi
+
