@@ -36,9 +36,9 @@ jobs:
         ls -al
         echo GITHUB_WORKSPACE=${GITHUB_WORKSPACE}
         echo "ARCH=${ARCH}"
-        # pip install -r ${GITHUB_WORKSPACE}/requirements.txt
         ${GITHUB_WORKSPACE}/install_requirements.sh
-        pytest
+        ${GITHUB_WORKSPACE}/tests/run-tests.sh
+        
         
   release:
     name: Release Job
