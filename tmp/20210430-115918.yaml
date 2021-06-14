@@ -1,0 +1,16 @@
+angle: 69.17818735314414
+category: FALL
+confidence: 0.8991963234324727
+keypoint_corr:
+  left hip:
+  - 135.0
+  - 128.0
+  left shoulder:
+  - 104.0
+  - 113.0
+  right hip:
+  - 138.0
+  - 127.0
+  right shoulder:
+  - 95.0
+  - 112.0
