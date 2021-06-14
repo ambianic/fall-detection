@@ -1,3 +1,13 @@
+[![Gitpod ready-to-code](https://img.shields.io/badge/Gitpod-ready--to--code-blue?logo=gitpod)](https://gitpod.io/#https://github.com/ambianic/fall-detection)
+[![Join the Slack chat room](https://img.shields.io/badge/Slack-Join%20the%20chat%20room-blue)](https://join.slack.com/t/ambianicai/shared_invite/zt-eosk4tv5-~GR3Sm7ccGbv1R7IEpk7OQ)
+
+[![CI Build](https://github.com/ambianic/fall-detection/actions/workflows/pythonpackage.yml/badge.svg)](https://github.com/ambianic/fall-detection/actions/workflows/pythonpackage.yml)
+[![codecov](https://codecov.io/gh/ambianic/ambianic-edge/branch/master/graph/badge.svg?token=JJlxaW5flS)](https://codecov.io/gh/ambianic/ambianic-fall-detection)
+[![CodeFactor](https://www.codefactor.io/repository/github/ambianic/fall-detection/badge)](https://www.codefactor.io/repository/github/ambianic/fall-detection)
+[![CodeQL](https://github.com/ambianic/fall-detection/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/ambianic/fall-detection/actions/workflows/codeql-analysis.yml)
+[![Language grade: Python](https://img.shields.io/lgtm/grade/python/g/ambianic/ambianic-fall-detection.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/ambianic/ambianic-fall-detection/context:python)
+
+
 # People Fall Detection
 
 _This repo is the new home of the fall detection model used in Ambianic Edge. We moved the code over from the [ambianic-edge repo](https://github.com/ambianic/ambianic-edge/blob/master/src/ambianic/pipeline/ai/fall_detect.py) and made it available as a standalone library in order to foster further research and use outside the Ambianic.ai project._
