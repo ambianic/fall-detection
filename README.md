@@ -1,15 +1,16 @@
 # People Fall Detection
 
-_This repo is the new home of the fall detection model used in Ambianic Edge. We are preparing to move the code over from the [ambianic-edge repo](https://github.com/ambianic/ambianic-edge/blob/master/src/ambianic/pipeline/ai/fall_detect.py) and make it available as a standalone library._
+_This repo is the new home of the fall detection model used in Ambianic Edge. We moved the code over from the [ambianic-edge repo](https://github.com/ambianic/ambianic-edge/blob/master/src/ambianic/pipeline/ai/fall_detect.py) and made it available as a standalone library in order to foster further research and use outside the Ambianic.ai project._
 
-# TODO
+# What's included in this repo
 
 - [x] Standalone Python ML library for people fall detection based on Tensorflow and [PoseNet 2.0](https://github.com/tensorflow/tfjs-models/tree/master/posenet).
-- [ ] Python source code and wheel package published on PyPi 
+- [X] Python source code 
 - [x] [Jupyter Notebook](https://mybinder.org/v2/gh/ambianic/fall-detection/main?filepath=Demo.ipynb) to interactively test and experiement with the model
 - [x] CI & test suite
 - [x] Training and testing data sets
 - [x] Third party ML models used as building blocks
+- [ ] Wheel package published on PyPi 
 
 # Project motivation
 
