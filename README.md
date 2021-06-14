@@ -6,7 +6,7 @@ _This repo is the new home of the fall detection model used in Ambianic Edge. We
 
 - [x] Standalone Python ML library for people fall detection based on Tensorflow and [PoseNet 2.0](https://github.com/tensorflow/tfjs-models/tree/master/posenet).
 - [ ] Python source code and wheel package published on PyPi 
-- [x] Jupyter Notebook to interactively test and experiement with the model
+- [x] [Jupyter Notebook](https://mybinder.org/v2/gh/ambianic/fall-detection/main?filepath=Demo.ipynb) to interactively test and experiement with the model
 - [x] CI & test suite
 - [x] Training and testing data sets
 - [x] Third party ML models used as building blocks
@@ -42,7 +42,13 @@ Experiment with the fall-detection module using simple script, jupyter-notebook 
 python3 demo-fall-detection.py
 ```
 
-###### Run a `Demo.ipynb` jupyter-notebook for the experiment
+###### Jupyter Notebook
+
+Source code of the `Demo.ipynb` notebook is [available in this repo](./Demo.ipynb).
+
+To run an interactive version on binder, [click here](https://mybinder.org/v2/gh/ambianic/fall-detection/main?filepath=Demo.ipynb).
+
+For more information how to work with Jupyter Notbooks on Github, see [this document](https://docs.github.com/en/github/managing-files-in-a-repository/working-with-non-code-files/working-with-jupyter-notebook-files-on-github).
 
 ###### Execute the below command for CLI usage
 
