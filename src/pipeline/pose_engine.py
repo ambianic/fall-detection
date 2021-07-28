@@ -55,7 +55,7 @@ class Pose:
 
 class PoseEngine:
     """Engine used for pose tasks."""
-    def __init__(self, tfengine=None, context=None):
+    def __init__(self, tfengine=None, model_name=None, context=None):
         """Creates a PoseEngine wrapper around an initialized tfengine.
         """
         if context:
@@ -64,7 +64,9 @@ class PoseEngine:
             self._sys_data_dir = DEFAULT_DATA_DIR
         self._sys_data_dir = Path(self._sys_data_dir)
         assert tfengine is not None
+        assert model_name is not None
         self._tfengine = tfengine
+        self.model_name = model_name
 
         self._input_tensor_shape = self.get_input_tensor_shape()
 
@@ -90,9 +92,34 @@ class PoseEngine:
         """
         return self._tfengine.input_details[0]['shape']
 
-    def parse_output(self, heatmap_data, offset_data, threshold):
+    
+    def parse_output_Movenet(self, keypoints_with_scores, height, width):
+    
+        keypoints_all = []
+        num_instances, _, _, _ = keypoints_with_scores.shape
+        
+        for idx in range(num_instances):
+            
+            kpts_y = keypoints_with_scores[0, idx, :, 1]
+            kpts_x = keypoints_with_scores[0, idx, :, 0]
+            
+            kpts_scores = keypoints_with_scores[0, idx, :, 2]
+            
+            kpts_absolute_xy = np.stack([width * np.array(kpts_x), height * np.array(kpts_y), kpts_scores], axis=-1)
+            keypoints_all.append(kpts_absolute_xy)
+            
+        if keypoints_all:
+            keypoints_xy = np.concatenate(keypoints_all, axis=0)
+        else:
+            keypoints_xy = np.zeros((0, 17, 2))
+
+        return keypoints_xy
+
+
+    def parse_output_Mobilenet(self, heatmap_data, offset_data):
+
         joint_num = heatmap_data.shape[-1]
-        pose_kps = np.zeros((joint_num, 4), np.float32)
+        pose_kps = np.zeros((joint_num, 3), np.float32)
 
         for i in range(heatmap_data.shape[-1]):
 
@@ -106,11 +133,9 @@ class PoseEngine:
             pose_kps[i, 1] = int(remap_pos[1] + offset_data[max_val_pos[0],
                                  max_val_pos[1], i+joint_num])
             max_prob = np.max(joint_heatmap)
-            pose_kps[i, 3] = max_prob
-            if max_prob > threshold:
-                if pose_kps[i, 0] < self._tensor_image_height and \
-                   pose_kps[i, 1] < self._tensor_image_width:
-                    pose_kps[i, 2] = 1
+            
+            pose_kps[i,2] = self.sigmoid(max_prob)
+            
 
         return pose_kps
 
@@ -195,20 +220,49 @@ class PoseEngine:
         return new_im
 
 
-    def detect_poses(self, img):
-        """
-        Detects poses in a given image.
-        :Parameters:
-        ----------
-        img : PIL.Image
-            Input Image for AI model detection.
-        :Returns:
-        -------
-        poses:
-            A list of Pose objects with keypoints and confidence scores
-        PIL.Image
-            Resized image fitting the AI model input tensor.
-        """
+    def draw_kps(self, kps, template_image):
+
+        pil_im = template_image
+        draw = ImageDraw.Draw(pil_im)
+        
+        leftShoulder = False
+        rightShoulder = False
+        
+        scoreList = {'LShoulder_score':0,'RShoulder_score':0,'LHip_score':0,'RHip_score':0}
+        
+        for i in range(kps.shape[0]):
+                                    
+            x, y, r = int(round(kps[i, 1])), int(round(kps[i, 0])), 1
+
+            if i == 5:
+                leftShoulder = True
+                leftShoulder_point = [x, y]
+                scoreList['LShoulder_score'] = kps[i,-1]
+                
+            if i == 6:
+                rightShoulder = True
+                rightShoulder_point = [x, y]
+                scoreList['RShoulder_score'] = kps[i,-1]
+
+            leftUpPoint = (x-r, y-r)
+            rightDownPoint = (x+r, y+r)
+            twoPointList = [leftUpPoint, rightDownPoint]
+            draw.ellipse(twoPointList, fill=(0, 255, 0, 255))
+
+            if i == 11 and leftShoulder:
+                leftHip_point = [x, y]
+                scoreList['LHip_score'] = kps[i,-1]
+                draw.line((leftShoulder_point[0],leftShoulder_point[1], leftHip_point[0],leftHip_point[1]), fill='green', width=3)
+
+            if i == 12 and rightShoulder:
+                rightHip_point = [x, y]
+                scoreList['RHip_score'] = kps[i,-1]
+                draw.line((rightShoulder_point[0],rightShoulder_point[1], rightHip_point[0],rightHip_point[1]), fill='green', width=3)
+                    
+        return pil_im, scoreList
+
+
+    def execute_Mobilenet_model(self, img):
 
         _tensor_input_size = (self._tensor_image_width,
                               self._tensor_image_height)
@@ -241,7 +295,74 @@ class PoseEngine:
         template_heatmaps = np.squeeze(template_output_data)
         template_offsets = np.squeeze(template_offset_data)
 
-        kps = self.parse_output(template_heatmaps, template_offsets, 0.3)
+        kps = self.parse_output_Mobilenet(template_heatmaps, template_offsets)
+
+        return kps, template_image, thumbnail
+
+
+    def execute_Movenet_model(self, img):
+
+        _tensor_input_size = (self._tensor_image_width,
+                              self._tensor_image_height)
+
+        # thumbnail is a proportionately resized image
+        thumbnail = self.thumbnail(image=img,
+                                               desired_size=_tensor_input_size)
+        # convert thumbnail into an image with the exact size
+        # as the input tensor preserving proportions by padding with
+        # a solid color as needed
+        template_image = self.resize(image=thumbnail,
+                                desired_size=_tensor_input_size)
+
+        template_input = np.expand_dims(template_image.copy(), axis=0)
+        floating_model = self._tfengine.input_details[0]['dtype'] == np.float32
+
+        if floating_model:
+            template_input = template_input.astype(np.float32)
+            
+        self.tf_interpreter().\
+            set_tensor(self._tfengine.input_details[0]['index'],
+                       template_input)
+        self.tf_interpreter().invoke()
+
+        keypoints_with_scores = self.tf_interpreter().get_tensor(self._tfengine.output_details[0]['index'])
+        kps = self.parse_output_Movenet(keypoints_with_scores, self._tensor_image_height, self._tensor_image_width)
+
+        return kps, template_image, thumbnail
+
+
+
+    def get_result(self, img):
+
+        if self.model_name == 'movenet':
+            kps, template_image, thumbnail = self.execute_Movenet_model(img)
+        elif self.model_name == 'mobilenet':    
+            kps, template_image, thumbnail = self.execute_Mobilenet_model(img)
+
+        output_img, scoreList = self.draw_kps(kps, template_image)
+
+        return thumbnail, output_img, scoreList
+
+
+    def detect_poses(self, img):
+        """
+        Detects poses in a given image.
+        :Parameters:
+        ----------
+        img : PIL.Image
+            Input Image for AI model detection.
+        :Returns:
+        -------
+        poses:
+            A list of Pose objects with keypoints and confidence scores
+        PIL.Image
+            Resized image fitting the AI model input tensor.
+        """
+
+        if self.model_name == 'movenet':
+            kps, template_image, thumbnail = self.execute_Movenet_model(img)
+        elif self.model_name == 'mobilenet':    
+            kps, template_image, thumbnail = self.execute_Mobilenet_model(img)
 
         poses = []
 
@@ -251,15 +372,20 @@ class PoseEngine:
         keypoint_count = kps.shape[0]
         for point_i in range(keypoint_count):
             x, y = kps[point_i, 1], kps[point_i, 0]
-            prob = self.sigmoid(kps[point_i, 3])
+            prob = kps[point_i, 2]
 
-            if prob > self.confidence_threshold:
+            if prob > self.confidence_threshold and \
+                0 < y < self._tensor_image_height and \
+                0 < x < self._tensor_image_width:
+
                 cnt += 1
                 if log.getEffectiveLevel() <= logging.DEBUG:
                     # development mode
                     # draw on image and save it for debugging
                     draw = ImageDraw.Draw(template_image)
                     draw.line(((0, 0), (x, y)), fill='blue')
+            else:
+                prob = 0
 
             keypoint = Keypoint(KEYPOINTS[point_i], [x, y], prob)
             keypoint_dict[KEYPOINTS[point_i]] = keypoint
