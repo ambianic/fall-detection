@@ -79,16 +79,16 @@ class TFInferenceEngine:
             .format(labels)
         self._model_labels_path = labels
         self._confidence_threshold = confidence_threshold
-        log.info('Loading AI model:\n'
-                  'TFLite graph: %r\n'
-                  'EdgeTPU graph: %r\n'
-                  'Labels %r.'
-                  'Condidence threshod: %.0f%%'
-                  'top-k: %d',
-                  model_tflite,
-                  model_edgetpu,
-                  labels,
-                  confidence_threshold*100)
+        # log.info('Loading AI model:\n'
+        #           'TFLite graph: %r\n'
+        #           'EdgeTPU graph: %r\n'
+        #           'Labels %r.'
+        #           'Condidence threshod: %.0f%%'
+        #           'top-k: %d',
+        #           model_tflite,
+        #           model_edgetpu,
+        #           labels,
+        #           confidence_threshold*100)
         # EdgeTPU is not available in testing and other environments
         # load dynamically as needed
 #        edgetpu_class = 'DetectionEngine'
