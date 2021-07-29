@@ -5,7 +5,6 @@ import os
 sys.path.append(os.path.abspath('.'))
 
 from src.pipeline.fall_detect import FallDetector
-import os
 import time
 from PIL import Image
 
