@@ -404,9 +404,9 @@ class PoseEngine:
                 {self.confidence_threshold}.")
             debug_image_file_name = \
                 f'tmp-pose-detect-image-time-{timestr}-keypoints-{cnt}.jpg'
-            template_image.save(
-                                Path(self._sys_data_dir,
-                                     debug_image_file_name),
-                                format='JPEG')
+            # template_image.save(
+            #                     Path(self._sys_data_dir,
+            #                          debug_image_file_name),
+            #                     format='JPEG')
             log.debug(f"Debug image saved: {debug_image_file_name}")
         return poses, thumbnail, pose_score
