@@ -293,9 +293,9 @@ class FallDetector():
         timestr = int(time.monotonic()*1000)
         debug_image_file_name = \
             f'tmp-fall-detect-thumbnail-{timestr}-score-{score}.jpg'
-        thumbnail.save(
-                       Path(self._sys_data_dir, debug_image_file_name),
-                       format='JPEG')
+        # thumbnail.save(
+        #                Path(self._sys_data_dir, debug_image_file_name),
+        #                format='JPEG')
         print(Path(self._sys_data_dir, debug_image_file_name))
         return body_lines_drawn
 
