@@ -44,14 +44,13 @@ echo "Installing tflite for x86 CPU"
 # fi
 
 pip3 list
-pip3 show tflite-runtime
 
 echo "deb https://packages.cloud.google.com/apt coral-edgetpu-stable main" | sudo tee /etc/apt/sources.list.d/coral-edgetpu.list
 curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
 sudo apt-get update
 sudo apt-get install python3-tflite-runtime
 
-
+pip3 show tflite-runtime
 
 # [Cleanup]
 sudo apt-get -y autoremove
