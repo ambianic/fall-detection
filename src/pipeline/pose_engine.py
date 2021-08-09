@@ -125,10 +125,10 @@ class PoseEngine():
 
     def get_result(self, img):
 
-        kps, template_image, thumbnail = self._model.execute_model(img)
+        kps, template_image, thumbnail, _inference_time = self._model.execute_model(img)
         output_img, scoreList = self.draw_kps(kps, template_image)
 
-        return thumbnail, output_img, scoreList
+        return thumbnail, output_img, scoreList, _inference_time
 
 
     def detect_poses(self, img):
@@ -146,7 +146,7 @@ class PoseEngine():
             Resized image fitting the AI model input tensor.
         """
 
-        kps, template_image, thumbnail = self._model.execute_model(img)
+        kps, template_image, thumbnail, _ = self._model.execute_model(img)
         poses = []
 
         keypoint_dict = {}

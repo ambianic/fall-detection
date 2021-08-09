@@ -1,5 +1,6 @@
 from src.pipeline.pose_base import AbstractPoseModel
 import numpy as np
+import time
 
 
 class Movenet(AbstractPoseModel):
@@ -44,6 +45,8 @@ class Movenet(AbstractPoseModel):
         template_image = self.resize(image=thumbnail,
                                 desired_size=_tensor_input_size)
 
+        start_time = time.process_time()
+
         template_input = np.expand_dims(template_image.copy(), axis=0)
         floating_model = self._tfengine.input_details[0]['dtype'] == np.float32
 
@@ -58,4 +61,7 @@ class Movenet(AbstractPoseModel):
         keypoints_with_scores = self.tf_interpreter().get_tensor(self._tfengine.output_details[0]['index'])
         kps = self.parse_output(keypoints_with_scores, self._tensor_image_height, self._tensor_image_width)
 
-        return kps, template_image, thumbnail
+
+        _inference_time = time.process_time() - start_time
+
+        return kps, template_image, thumbnail, _inference_time
