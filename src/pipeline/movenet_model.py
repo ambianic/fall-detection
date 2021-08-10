@@ -4,12 +4,16 @@ import time
 
 
 class Movenet(AbstractPoseModel):
+    '''The class for pose estimation using Movenet implementation.'''
 
     def __init__(self, tfengine):
         super().__init__(tfengine)
 
 
     def parse_output(self, keypoints_with_scores, height, width):
+        '''
+            Parse Output of TFLite model and get keypoints with score.
+        '''
     
         keypoints_all = []
         num_instances, _, _, _ = keypoints_with_scores.shape
@@ -33,6 +37,24 @@ class Movenet(AbstractPoseModel):
 
 
     def execute_model(self, img):
+        ''' Run TFLite model.
+        
+        :Parameters:
+        ----------
+        img: PIL.Image
+            Input Image for AI model detection.
+        :Returns:
+        -------
+        kps:
+            A list of Pose objects with keypoints and confidence scores
+        template_image: PIL.Image
+            Input resized image.
+        thumbnail: PIL.Image
+            Thumbnail input image
+        _inference_time: float
+            Model inference time in seconds
+        '''
+        
         _tensor_input_size = (self._tensor_image_width,
                               self._tensor_image_height)
 
