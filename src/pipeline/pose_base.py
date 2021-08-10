@@ -6,9 +6,18 @@ import logging
 log = logging.getLogger(__name__)
 
 class AbstractPoseModel(ABC):
+    """
+        Abstract class for pose estimation models.
+    """
 
     def __init__(self, tfengine):
                 
+        """Initialize posenet-base class with Tensorflow inference engine.
+        :Parameters:
+        ----------
+        tfengine: Tensorflow inference engine.
+        """
+
         self._tfengine = tfengine
         
         self._input_tensor_shape = self.get_input_tensor_shape()

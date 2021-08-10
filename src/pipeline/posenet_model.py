@@ -3,6 +3,7 @@ import numpy as np
 import time
 
 class Posenet_MobileNet(AbstractPoseModel):
+    '''The class for pose estimation using Posenet Mobilenet implementation.'''
 
     def __init__(self, tfengine):
         super().__init__(tfengine)
@@ -13,6 +14,9 @@ class Posenet_MobileNet(AbstractPoseModel):
 
 
     def parse_output(self, heatmap_data, offset_data):
+        '''
+            Parse Output of TFLite model and get keypoints with score.
+        '''
 
         joint_num = heatmap_data.shape[-1]
         pose_kps = np.zeros((joint_num, 3), np.float32)
@@ -37,6 +41,24 @@ class Posenet_MobileNet(AbstractPoseModel):
 
 
     def execute_model(self, img):
+        ''' Run TFLite model.
+        
+        :Parameters:
+        ----------
+        img: PIL.Image
+            Input Image for AI model detection.
+        :Returns:
+        -------
+        kps:
+            A list of Pose objects with keypoints and confidence scores
+        template_image: PIL.Image
+            Input resized image.
+        thumbnail: PIL.Image
+            Thumbnail input image
+        _inference_time: float
+            Model inference time in seconds
+        '''
+
         _tensor_input_size = (self._tensor_image_width,
                               self._tensor_image_height)
 
