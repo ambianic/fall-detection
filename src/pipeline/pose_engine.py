@@ -1,10 +1,12 @@
 from src import DEFAULT_DATA_DIR
 import logging
 import time
-import numpy as np
 from PIL import ImageDraw
 from pathlib import Path
-from PIL import ImageOps
+
+
+from src.pipeline.posenet_model import Posenet_MobileNet
+from src.pipeline.movenet_model import Movenet
 
 log = logging.getLogger(__name__)
 
@@ -53,146 +55,80 @@ class Pose:
         return 'Pose({}, {})'.format(self.keypoints, self.score)
 
 
-class PoseEngine:
+class PoseEngine():
     """Engine used for pose tasks."""
-    def __init__(self, tfengine=None, context=None):
+    def __init__(self, tfengine=None, model_name=None, context=None):
         """Creates a PoseEngine wrapper around an initialized tfengine.
         """
+
+        assert tfengine is not None
+        assert model_name is not None
+
+        if model_name == 'movenet':
+            self._model = Movenet(tfengine)
+        elif model_name == 'mobilenet':
+            self._model = Posenet_MobileNet(tfengine)
+        
         if context:
             self._sys_data_dir = context.data_dir
         else:
             self._sys_data_dir = DEFAULT_DATA_DIR
         self._sys_data_dir = Path(self._sys_data_dir)
-        assert tfengine is not None
-        self._tfengine = tfengine
 
-        self._input_tensor_shape = self.get_input_tensor_shape()
+        self.confidence_threshold = self._model.confidence_threshold
+        self._tensor_image_height = self._model._tensor_image_height
+        self._tensor_image_width = self._model._tensor_image_width
 
-        _, self._tensor_image_height, self._tensor_image_width, self._tensor_image_depth = \
-            self.get_input_tensor_shape()
+        
 
-        self.confidence_threshold = self._tfengine.confidence_threshold
-        log.debug(f"Initializing PoseEngine with confidence threshold \
-            {self.confidence_threshold}")
+    def draw_kps(self, kps, template_image):
 
-    def get_input_tensor_shape(self):
-        """Get the shape of the input tensor structure.
-        Gets the shape required for the input tensor.
-        For models trained for image classification / detection, the shape is
-        always [1, height, width, channels].
-        To be used as input for :func:`run_inference`,
-        this tensor shape must be flattened into a 1-D array with size
-        ``height * width * channels``. To instead get that 1-D array size, use
-        :func:`required_input_array_size`.
-        Returns:
-        A 1-D array (:obj:`numpy.ndarray`) representing the required input
-        tensor shape.
-        """
-        return self._tfengine.input_details[0]['shape']
+        pil_im = template_image
+        draw = ImageDraw.Draw(pil_im)
+        
+        leftShoulder = False
+        rightShoulder = False
+        
+        scoreList = {'LShoulder_score':0,'RShoulder_score':0,'LHip_score':0,'RHip_score':0}
+        
+        for i in range(kps.shape[0]):
+                                    
+            x, y, r = int(round(kps[i, 1])), int(round(kps[i, 0])), 1
 
-    def parse_output(self, heatmap_data, offset_data, threshold):
-        joint_num = heatmap_data.shape[-1]
-        pose_kps = np.zeros((joint_num, 4), np.float32)
+            if i == 5:
+                leftShoulder = True
+                leftShoulder_point = [x, y]
+                scoreList['LShoulder_score'] = kps[i,-1]
+                
+            if i == 6:
+                rightShoulder = True
+                rightShoulder_point = [x, y]
+                scoreList['RShoulder_score'] = kps[i,-1]
 
-        for i in range(heatmap_data.shape[-1]):
+            leftUpPoint = (x-r, y-r)
+            rightDownPoint = (x+r, y+r)
+            twoPointList = [leftUpPoint, rightDownPoint]
+            draw.ellipse(twoPointList, fill=(0, 255, 0, 255))
 
-            joint_heatmap = heatmap_data[..., i]
-            max_val_pos = np.squeeze(
-                np.argwhere(joint_heatmap == np.max(joint_heatmap)))
-            remap_pos = np.array(max_val_pos/8*self._tensor_image_height,
-                                 dtype=np.int32)
-            pose_kps[i, 0] = int(remap_pos[0] + offset_data[max_val_pos[0],
-                                 max_val_pos[1], i])
-            pose_kps[i, 1] = int(remap_pos[1] + offset_data[max_val_pos[0],
-                                 max_val_pos[1], i+joint_num])
-            max_prob = np.max(joint_heatmap)
-            pose_kps[i, 3] = max_prob
-            if max_prob > threshold:
-                if pose_kps[i, 0] < self._tensor_image_height and \
-                   pose_kps[i, 1] < self._tensor_image_width:
-                    pose_kps[i, 2] = 1
+            if i == 11 and leftShoulder:
+                leftHip_point = [x, y]
+                scoreList['LHip_score'] = kps[i,-1]
+                draw.line((leftShoulder_point[0],leftShoulder_point[1], leftHip_point[0],leftHip_point[1]), fill='green', width=3)
 
-        return pose_kps
-
-    def sigmoid(self, x):
-        return 1 / (1 + np.exp(-x))
-
-    def tf_interpreter(self):
-        return self._tfengine._tf_interpreter
+            if i == 12 and rightShoulder:
+                rightHip_point = [x, y]
+                scoreList['RHip_score'] = kps[i,-1]
+                draw.line((rightShoulder_point[0],rightShoulder_point[1], rightHip_point[0],rightHip_point[1]), fill='green', width=3)
+                    
+        return pil_im, scoreList
 
 
-    def thumbnail(self, image=None, desired_size=None):
-        """Resizes original image as close as possible to desired size.
-        Preserves aspect ratio of original image.
-        Does not modify the original image.
-        :Parameters:
-        ----------
-        image : PIL.Image
-            Input Image for AI model detection.
-        desired_size : (width, height)
-            Size expected by the AI model.
-        :Returns:
-        -------
-        PIL.Image
-            Resized image fitting for the AI model input tensor.
-        """
-        assert image
-        assert desired_size
-        log.debug('input image size = %r', image.size)
-        thumb = image.copy()
-        w, h = desired_size
-        try:
-            # convert from numpy to native Python int type
-            # that PIL expects
-            if isinstance(w, np.generic):
-                w = w.item()
-                w = int(w)
-                h = h.item()
-                h = int(h)
-            thumb.thumbnail((w, h))
-        except Exception as e:
-            msg = (f"Exception in "
-                   f"PIL.image.thumbnail(desired_size={desired_size}):"
-                   f"type(width)={type(w)}, type(height)={type(h)}"
-                   f"\n{e}"
-                   )
-            log.exception(msg)
-            raise RuntimeError(msg)
-        log.debug('thmubnail image size = %r', thumb.size)
-        return thumb
+    def get_result(self, img):
 
+        kps, template_image, thumbnail, _inference_time = self._model.execute_model(img)
+        output_img, scoreList = self.draw_kps(kps, template_image)
 
-    def resize(self, image=None, desired_size=None):
-        """Pad original image to exact size expected by input tensor.
-        Preserve aspect ratio to avoid confusing the AI model with
-        unnatural distortions. Pad the resulting image
-        with solid black color pixels to fill the desired size.
-        Do not modify the original image.
-        :Parameters:
-        ----------
-        image : PIL.Image
-            Input Image sized to fit an input tensor but without padding.
-            Its possible that one size fits one tensor dimension exactly
-            but the other size is smaller than
-            the input tensor other dimension.
-        desired_size : (width, height)
-            Exact size expected by the AI model.
-        :Returns:
-        -------
-        PIL.Image
-            Resized image fitting exactly the AI model input tensor.
-        """
-        assert image
-        assert desired_size
-        log.debug('input image size = %r', image.size)
-        thumb = image.copy()
-        delta_w = desired_size[0] - thumb.size[0]
-        delta_h = desired_size[1] - thumb.size[1]
-        padding = (0, 0, delta_w, delta_h)
-        new_im = ImageOps.expand(thumb, padding)
-        log.debug('new image size = %r', new_im.size)
-        assert new_im.size == desired_size
-        return new_im
+        return thumbnail, output_img, scoreList, _inference_time
 
 
     def detect_poses(self, img):
@@ -210,39 +146,7 @@ class PoseEngine:
             Resized image fitting the AI model input tensor.
         """
 
-        _tensor_input_size = (self._tensor_image_width,
-                              self._tensor_image_height)
-
-        # thumbnail is a proportionately resized image
-        thumbnail = self.thumbnail(image=img,
-                                               desired_size=_tensor_input_size)
-        # convert thumbnail into an image with the exact size
-        # as the input tensor preserving proportions by padding with
-        # a solid color as needed
-        template_image = self.resize(image=thumbnail,
-                                desired_size=_tensor_input_size)
-
-        template_input = np.expand_dims(template_image.copy(), axis=0)
-        floating_model = self._tfengine.input_details[0]['dtype'] == np.float32
-
-        if floating_model:
-            template_input = (np.float32(template_input) - 127.5) / 127.5
-
-        self.tf_interpreter().\
-            set_tensor(self._tfengine.input_details[0]['index'],
-                       template_input)
-        self.tf_interpreter().invoke()
-
-        template_output_data = self.tf_interpreter().\
-            get_tensor(self._tfengine.output_details[0]['index'])
-        template_offset_data = self.tf_interpreter().\
-            get_tensor(self._tfengine.output_details[1]['index'])
-
-        template_heatmaps = np.squeeze(template_output_data)
-        template_offsets = np.squeeze(template_offset_data)
-
-        kps = self.parse_output(template_heatmaps, template_offsets, 0.3)
-
+        kps, template_image, thumbnail, _ = self._model.execute_model(img)
         poses = []
 
         keypoint_dict = {}
@@ -251,15 +155,20 @@ class PoseEngine:
         keypoint_count = kps.shape[0]
         for point_i in range(keypoint_count):
             x, y = kps[point_i, 1], kps[point_i, 0]
-            prob = self.sigmoid(kps[point_i, 3])
+            prob = kps[point_i, 2]
 
-            if prob > self.confidence_threshold:
+            if prob > self.confidence_threshold and \
+                0 < y < self._tensor_image_height and \
+                0 < x < self._tensor_image_width:
+
                 cnt += 1
                 if log.getEffectiveLevel() <= logging.DEBUG:
                     # development mode
                     # draw on image and save it for debugging
                     draw = ImageDraw.Draw(template_image)
                     draw.line(((0, 0), (x, y)), fill='blue')
+            else:
+                prob = 0
 
             keypoint = Keypoint(KEYPOINTS[point_i], [x, y], prob)
             keypoint_dict[KEYPOINTS[point_i]] = keypoint
@@ -278,9 +187,9 @@ class PoseEngine:
                 {self.confidence_threshold}.")
             debug_image_file_name = \
                 f'tmp-pose-detect-image-time-{timestr}-keypoints-{cnt}.jpg'
-            template_image.save(
-                                Path(self._sys_data_dir,
-                                     debug_image_file_name),
-                                format='JPEG')
+            # template_image.save(
+            #                     Path(self._sys_data_dir,
+            #                          debug_image_file_name),
+            #                     format='JPEG')
             log.debug(f"Debug image saved: {debug_image_file_name}")
         return poses, thumbnail, pose_score
