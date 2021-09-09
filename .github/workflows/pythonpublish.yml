@@ -25,4 +25,5 @@ jobs:
         cp README.md src/
         cd src
         python setup.py sdist bdist_wheel
-        twine upload dist/*
+        twine upload --verbose --repository  testpypi dist/*
+        # twine upload dist/*
