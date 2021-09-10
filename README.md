@@ -5,8 +5,7 @@
 [![codecov](https://codecov.io/gh/ambianic/ambianic-edge/branch/master/graph/badge.svg?token=JJlxaW5flS)](https://codecov.io/gh/ambianic/ambianic-fall-detection)
 [![CodeFactor](https://www.codefactor.io/repository/github/ambianic/fall-detection/badge)](https://www.codefactor.io/repository/github/ambianic/fall-detection)
 [![CodeQL](https://github.com/ambianic/fall-detection/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/ambianic/fall-detection/actions/workflows/codeql-analysis.yml)
-[![Language grade: Python](https://img.shields.io/lgtm/grade/python/g/ambianic/ambianic-fall-detection.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/ambianic/fall-detection/context:python)
-
+[![Language grade: Python](https://img.shields.io/lgtm/grade/python/g/ambianic/fall-detection.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/ambianic/fall-detection/context:python)
 
 # Person Fall Detection
 
