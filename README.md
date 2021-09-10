@@ -8,7 +8,7 @@
 [![Language grade: Python](https://img.shields.io/lgtm/grade/python/g/ambianic/ambianic-fall-detection.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/ambianic/fall-detection/context:python)
 
 
-# People Fall Detection
+# Person Fall Detection
 
 _This repo is the new home of the fall detection model used in Ambianic Edge. We moved the code over from the [ambianic-edge repo](https://github.com/ambianic/ambianic-edge/blob/master/src/ambianic/pipeline/ai/fall_detect.py) and made it available as a standalone library in order to foster further research and use outside the Ambianic.ai project._
 
