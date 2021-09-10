@@ -84,12 +84,15 @@ Based on testing and user feedback we are aware of the following limitations for
 - Lighting condition: Good lighting is required for optimal performance. Dim light reduces PoseNet's confidence in keypoint estimates.
 - Single person: The model is optimized for situation when a person is home alone. If there are multiple people in the camera view, that may confuse the model and lead to false fall detections.
 - No clutter: The model performs best when the area being monitored is relatively clear of various small objects. Areas cluttered with objects may confuse the model that some of these objects look like people.
+- Occlusions: The model suffers when the person falls behind furniture (e.g. a table or a chair) that blocks the camera from seeing a substantial part of the body.
 
 # Future work
 
-The current version of the Fall Detector uses PoseNet Mobilnetv1. There are newer, more powerful models such as PoseNet 2.0 Resnet50 and BlazePose that are able to estimate body keypoints in a broader variety of situations. However they can be also more CPU resource intensive, which reduces the FPS we can process. We are working on testing some of these new models and converting them to downsized IoT optimized versions, with minimum loss of accuracy and speed tradeoff. You can track our work [here](https://github.com/ambianic/fall-detection/issues/5).
+The current version of the Fall Detector uses PoseNet Mobilnetv1. We have done research with a more recent MoveNet model from Google AI and [published a comparison](https://blog.ambianic.ai/2021/09/02/movenet-vs-posenet-person-fall-detection.html) between PoseNet and MoveNet on fall data.
+
+There are other recent models such as BlazePose 3D that have yet to be benchmarked on fall data. We welcome contributions from other researchers.
 
 As we work with families and caregivers to test the system in real world scenarious, we expect to develop better intuition for the key factors that determine a fall in a sequence of video frames. 
 Eventually we expect to replace some of the current heuristics with learned models that are able to more precisely distinguish between true falls and non-falls (e.g. bending over or squating to tie shoes).
 
-Ideas and constructive criticism are welcome. Feel free to join the discussion on [Slack](https://ambianicai.slack.com/join/shared_invite/zt-eosk4tv5-~GR3Sm7ccGbv1R7IEpk7OQ#/), open a [github issue](https://github.com/ambianic/fall-detection/issues) or PR draft.
+Ideas and constructive criticism are always welcome. Feel free to join the discussion on [Slack](https://ambianicai.slack.com/join/shared_invite/zt-eosk4tv5-~GR3Sm7ccGbv1R7IEpk7OQ#/), open a [github issue](https://github.com/ambianic/fall-detection/issues) or a PR draft.
