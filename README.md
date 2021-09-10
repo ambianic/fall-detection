@@ -2,7 +2,7 @@
 [![Join the Slack chat room](https://img.shields.io/badge/Slack-Join%20the%20chat%20room-blue)](https://join.slack.com/t/ambianicai/shared_invite/zt-eosk4tv5-~GR3Sm7ccGbv1R7IEpk7OQ)
 
 [![CI Build](https://github.com/ambianic/fall-detection/actions/workflows/pythonpackage.yml/badge.svg)](https://github.com/ambianic/fall-detection/actions/workflows/pythonpackage.yml)
-[![codecov](https://codecov.io/gh/ambianic/ambianic-edge/branch/master/graph/badge.svg?token=JJlxaW5flS)](https://codecov.io/gh/ambianic/ambianic-fall-detection)
+[![codecov](https://codecov.io/gh/ambianic/fall-detection/branch/main/graph/badge.svg?token=IGXT8VYBS7)](https://codecov.io/gh/ambianic/fall-detection)
 [![CodeFactor](https://www.codefactor.io/repository/github/ambianic/fall-detection/badge)](https://www.codefactor.io/repository/github/ambianic/fall-detection)
 [![CodeQL](https://github.com/ambianic/fall-detection/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/ambianic/fall-detection/actions/workflows/codeql-analysis.yml)
 [![Language grade: Python](https://img.shields.io/lgtm/grade/python/g/ambianic/fall-detection.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/ambianic/fall-detection/context:python)
