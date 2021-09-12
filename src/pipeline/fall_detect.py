@@ -18,6 +18,7 @@ class FallDetector():
                  model=None,
                  labels=None,
                  confidence_threshold=0.15,
+                 model_name=None,
                  **kwargs
                  ):
         """Initialize detector with config parameters.
@@ -36,6 +37,7 @@ class FallDetector():
                         model=model,
                         labels=labels,
                         confidence_threshold=confidence_threshold)
+        self.model_name = model_name
 
         self._sys_data_dir = DEFAULT_DATA_DIR
         self._sys_data_dir = Path(self._sys_data_dir)
@@ -64,7 +66,7 @@ class FallDetector():
         # self._prev_data[1] : store data of frame at t-1
         self._prev_data[0] = self._prev_data[1] = _dix
 
-        self._pose_engine = PoseEngine(self._tfengine)
+        self._pose_engine = PoseEngine(self._tfengine, self.model_name)
         self._fall_factor = 60
         self.confidence_threshold = confidence_threshold
         log.debug(f"Initializing FallDetector with conficence threshold: \
@@ -291,9 +293,9 @@ class FallDetector():
         timestr = int(time.monotonic()*1000)
         debug_image_file_name = \
             f'tmp-fall-detect-thumbnail-{timestr}-score-{score}.jpg'
-        thumbnail.save(
-                       Path(self._sys_data_dir, debug_image_file_name),
-                       format='JPEG')
+        # thumbnail.save(
+        #                Path(self._sys_data_dir, debug_image_file_name),
+        #                format='JPEG')
         print(Path(self._sys_data_dir, debug_image_file_name))
         return body_lines_drawn
 
