@@ -18,4 +18,5 @@ cp README.md src/
 cd src
 python3 setup.py setopt --command metadata --option version --set-value $RELEASE_VERSION
 
-
+# verify if version is updated in setup.cfg
+cat setup.cfg
