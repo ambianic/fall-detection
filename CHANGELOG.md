@@ -1,5 +1,12 @@
 # Semantic Versioning Changelog
 
+## [1.0.1](https://github.com/bhavikapanara/fall-detection/compare/v1.0.0...v1.0.1) (2021-09-16)
+
+
+### Bug Fixes
+
+* sem rel increments ([447abcb](https://github.com/bhavikapanara/fall-detection/commit/447abcb6cffd35cbd4495a4a761dc6871c62b185))
+
 # 1.0.0 (2021-09-16)
 
 
