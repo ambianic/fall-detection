@@ -1,5 +1,13 @@
 # Semantic Versioning Changelog
 
+## [1.0.2](https://github.com/bhavikapanara/fall-detection/compare/v1.0.1...v1.0.2) (2021-09-27)
+
+
+### Bug Fixes
+
+* python setup files ([#23](https://github.com/bhavikapanara/fall-detection/issues/23)) ([41ee60d](https://github.com/bhavikapanara/fall-detection/commit/41ee60de73ecb6b3dc1d05753f806c14a0af4a41))
+* update mode version and action ([c2d0331](https://github.com/bhavikapanara/fall-detection/commit/c2d03314e5e9f4a4dc2095ac1eb5e26b7769856e))
+
 ## [1.0.1](https://github.com/bhavikapanara/fall-detection/compare/v1.0.0...v1.0.1) (2021-09-16)
 
 
