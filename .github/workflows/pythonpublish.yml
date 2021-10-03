@@ -8,9 +8,9 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v2
     - name: Set up Python
-      uses: actions/setup-python@v1
+      uses: actions/setup-python@v2
       with:
         python-version: '3.x'
     - name: Install dependencies
@@ -25,4 +25,5 @@ jobs:
         cp README.md src/
         cd src
         python setup.py sdist bdist_wheel
-        twine upload dist/*
+        twine upload --verbose --repository  testpypi dist/*
+        # twine upload dist/*
