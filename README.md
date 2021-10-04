@@ -87,11 +87,18 @@ Based on testing and user feedback we are aware of the following limitations for
 
 # Future work
 
+## Updating pose detection to MoveNet
 The current version of the Fall Detector uses PoseNet Mobilnetv1. We have done research with a more recent MoveNet model from Google AI and [published a comparison](https://blog.ambianic.ai/2021/09/02/movenet-vs-posenet-person-fall-detection.html) between PoseNet and MoveNet on fall data.
 
 There are other recent models such as BlazePose 3D that have yet to be benchmarked on fall data. We welcome contributions from other researchers.
 
-As we work with families and caregivers to test the system in real world scenarious, we expect to develop better intuition for the key factors that determine a fall in a sequence of video frames. 
+As we work with families and caregivers to test the system in real world scenarious, we expect to develop better intuition for the key factors that determine a fall in a sequence of video frames.
+
+## Moving towards on-device transfer learning for fall classification
+
+We began testing an on-device transfer learning approach using TFLite Model Maker. Here is our [working notebook](FallDetect-TFLiteModelmaker.ipynb
+) with early results.
+
 Eventually we expect to replace some of the current heuristics with learned models that are able to more precisely distinguish between true falls and non-falls (e.g. bending over or squating to tie shoes).
 
 Ideas and constructive criticism are always welcome. Feel free to join the discussion on [Slack](https://ambianicai.slack.com/join/shared_invite/zt-eosk4tv5-~GR3Sm7ccGbv1R7IEpk7OQ#/), open a [github issue](https://github.com/ambianic/fall-detection/issues) or a PR draft.
