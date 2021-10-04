@@ -1,5 +1,12 @@
 # Semantic Versioning Changelog
 
+## [1.0.7](https://github.com/ambianic/fall-detection/compare/v1.0.6...v1.0.7) (2021-10-04)
+
+
+### Bug Fixes
+
+* author field ([5a7cd89](https://github.com/ambianic/fall-detection/commit/5a7cd895a4386c70617edeb2336f851277729fea))
+
 ## [1.0.6](https://github.com/ambianic/fall-detection/compare/v1.0.5...v1.0.6) (2021-10-04)
 
 
