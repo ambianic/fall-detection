@@ -1,5 +1,12 @@
 # Semantic Versioning Changelog
 
+## [1.0.8](https://github.com/ambianic/fall-detection/compare/v1.0.7...v1.0.8) (2021-10-04)
+
+
+### Bug Fixes
+
+* formatting for pypi ([24ced87](https://github.com/ambianic/fall-detection/commit/24ced8763170b4e7e800c12c5169ad0842f431a8))
+
 ## [1.0.7](https://github.com/ambianic/fall-detection/compare/v1.0.6...v1.0.7) (2021-10-04)
 
 
