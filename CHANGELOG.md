@@ -1,5 +1,12 @@
 # Semantic Versioning Changelog
 
+## [1.0.9](https://github.com/ambianic/fall-detection/compare/v1.0.8...v1.0.9) (2021-10-04)
+
+
+### Bug Fixes
+
+* prod deployment for main upstream repo only ([3fc569b](https://github.com/ambianic/fall-detection/commit/3fc569b733569188da1f4311c26bf8cb9909c9b7))
+
 ## [1.0.8](https://github.com/ambianic/fall-detection/compare/v1.0.7...v1.0.8) (2021-10-04)
 
 
