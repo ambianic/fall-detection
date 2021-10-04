@@ -1,5 +1,12 @@
 # Semantic Versioning Changelog
 
+## [1.0.4](https://github.com/ambianic/fall-detection/compare/v1.0.3...v1.0.4) (2021-10-04)
+
+
+### Bug Fixes
+
+* pypi package name ([731bac5](https://github.com/ambianic/fall-detection/commit/731bac595e17ab4589ae0865e749e39b0a198583))
+
 ## [1.0.3](https://github.com/ambianic/fall-detection/compare/v1.0.2...v1.0.3) (2021-10-04)
 
 
