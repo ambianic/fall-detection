@@ -1,5 +1,12 @@
 # Semantic Versioning Changelog
 
+## [1.0.1](https://github.com/ambianic/fall-detection/compare/v1.0.0...v1.0.1) (2021-10-04)
+
+
+### Bug Fixes
+
+* test pypi publish workflow ([3bac010](https://github.com/ambianic/fall-detection/commit/3bac0108b08c8bfb7151dbf0bd9dae7459467f81))
+
 # 1.0.0 (2021-10-03)
 
 
