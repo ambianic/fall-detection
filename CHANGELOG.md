@@ -1,5 +1,12 @@
 # Semantic Versioning Changelog
 
+## [1.0.6](https://github.com/ambianic/fall-detection/compare/v1.0.5...v1.0.6) (2021-10-04)
+
+
+### Bug Fixes
+
+* sem rel script ([7dc999d](https://github.com/ambianic/fall-detection/commit/7dc999dce4e967f7417bc82f392e080984e23ab0))
+
 ## [1.0.5](https://github.com/ambianic/fall-detection/compare/v1.0.4...v1.0.5) (2021-10-04)
 
 
