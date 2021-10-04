@@ -50,5 +50,5 @@ jobs:
         cp README.md src/
         cd src
         python setup.py sdist bdist_wheel
-        twine --verbose upload dist/*
+        twine upload --verbose dist/*
         
