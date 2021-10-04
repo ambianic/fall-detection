@@ -96,10 +96,12 @@ As we work with families and caregivers to test the system in real world scenari
 
 ## Moving towards on-device transfer learning for fall classification
 
+Eventually we expect to replace some of the current heuristics with learned models that are able to more precisely distinguish between true falls and non-falls (e.g. bending over or squating to tie shoes).
+
 We began testing an on-device transfer learning approach using TFLite Model Maker. Here is our [working notebook](FallDetect-TFLiteModelmaker.ipynb
 ) with early results.
 
-Eventually we expect to replace some of the current heuristics with learned models that are able to more precisely distinguish between true falls and non-falls (e.g. bending over or squating to tie shoes).
+## Your Contributions
 
 Ideas and constructive criticism are always welcome. Feel free to join the discussion on [Slack](https://ambianicai.slack.com/join/shared_invite/zt-eosk4tv5-~GR3Sm7ccGbv1R7IEpk7OQ#/), open a [github issue](https://github.com/ambianic/fall-detection/issues) or a PR draft.
  
