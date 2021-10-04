@@ -30,6 +30,7 @@ jobs:
         # twine upload dist/*
   deploy-prod:
     name: Deploy to PyPi.org
+    if: ${{ github.repository_owner == 'ambianic' }}
     needs: [deploy-validate]
     runs-on: ubuntu-latest
     steps:
